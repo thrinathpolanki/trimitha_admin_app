@@ -1,0 +1,80 @@
+name: personal_admin_app
+description: Personal Admin Mobile App — connects to your Google Apps Script backend.
+publish_to: 'none'
+version: 1.0.0+1
+ 
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+ 
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+ 
+  # Networking — talks to your Apps Script Web App URL
+  http: ^1.2.0
+ 
+  # Stores the login session token securely on the device
+  flutter_secure_storage: ^9.0.0
+ 
+  # Nice date formatting for contacts/blogs
+  intl: ^0.19.0
+ 
+  # Better typography — Poppins for headings, Inter for body text
+  google_fonts: ^6.2.1
+ 
+  # Email/Call actions and native Share sheet on the Contact Detail screen
+  url_launcher: ^6.2.5
+  share_plus: ^7.2.2
+ 
+  # Cover image picking for blog posts
+  image_picker: ^1.1.2
+ 
+  # Temp file storage for CSV export (Settings > Export)
+  path_provider: ^2.1.3
+ 
+  # Local device notifications + persisted "last seen" state for the
+  # polling-based notification system (see notification_service.dart)
+  flutter_local_notifications: ^17.2.2
+  shared_preferences: ^2.2.3
+ 
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+ 
+  # Generates real app icons for Android/iOS/web from the source images
+  # in assets/icon/ — run: dart run flutter_launcher_icons
+  flutter_launcher_icons: ^0.13.1
+ 
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/
+ 
+# Config for the flutter_launcher_icons package (see MOBILE_SETUP_GUIDE.md
+# for how to run it). Uses your own logo file — place TrimithaLogo.png in
+# assets/icon/ before running the icon generator.
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/TrimithaLogo.png"
+  adaptive_icon_background: "#0A2540"
+  adaptive_icon_foreground: "assets/icon/TrimithaLogo.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/icon/TrimithaLogo.png"
+    background_color: "#0A2540"
+    theme_color: "#0A2540"
+
+# path_provider_android 2.3.x pulls in the "jni" package for its native
+# implementation, which is currently incompatible with newer Kotlin/AGP
+# Gradle plugin versions (causes "Could not find method kotlin() for
+# arguments" build failures on Android). Pinning to 2.2.23 avoids the jni
+# dependency (introduced in 2.3.0) while staying well past the version
+# that removed v1 embedding support (2.2.5), so it works with current
+# Flutter SDKs. This app only uses path_provider for temp CSV export, so
+# this older implementation is more than sufficient.
+dependency_overrides:
+  path_provider_android: 2.2.23
