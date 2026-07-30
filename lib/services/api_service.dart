@@ -15,7 +15,7 @@ class ApiService {
   // EDIT THIS — same Web App URL used by your website's HTML pages.
   // ---------------------------------------------------------------------
   static const String webAppUrl =
-      'https://script.google.com/macros/s/AKfycbwVYL0MZWic4_xBT98c0GUjW1hsgW5ZE6UwnNarfOr08f4ourjY9we4ZkQEaeha3BCj/exec'; // e.g. https://script.google.com/macros/s/AKfycb.../exec
+      ''; // e.g. https://script.google.com/macros/s/AKfycb.../exec
 
   // Dart's http client sends a very distinctive, non-browser User-Agent by
   // default (e.g. "Dart/3.4 (dart:io)"), which some networks/edge systems
