@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>Blog & Insights | Thrinath Polanki</title>
+
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'], heading: ['"Outfit"', 'sans-serif'] },
+                    colors: { brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' }, dark: { bg: '#0f172a', card: '#1e293b', border: '#334155' } }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* base & glass */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* mobile: 2 cards per row, equal height, consistent spacing */
+        @media (max-width: 640px) {
+            #blog-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            #blog-grid article {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                min-height: 0;
+            }
+
+            #blog-grid article .h-40 {
+                height: 140px;
+            }
+
+            #blog-grid article .p-5 {
+                padding: 0.75rem;
+            }
+
+            #blog-grid article h3 {
+                font-size: 0.95rem;
+                line-height: 1.3;
+                margin-bottom: 0.25rem;
+            }
+
+            #blog-grid article p.text-sm {
+                font-size: 0.7rem;
+                line-height: 1.3;
+                margin-bottom: 0.25rem;
+            }
+
+            #blog-grid article .text-xs {
+                font-size: 0.6rem;
+            }
+
+            #blog-grid article button {
+                font-size: 0.7rem;
+            }
+
+            #blog-grid article .group .absolute.top-4.left-4 {
+                top: 0.5rem;
+                left: 0.5rem;
+                padding: 0.15rem 0.5rem;
+                font-size: 0.55rem;
+            }
+
+            #blog-grid article img {
+                object-fit: cover;
+                width: 100%;
+                height: 100%;
+            }
+
+            #blog-grid article .line-clamp-3 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            #article-modal .max-w-3xl {
+                margin: 0.5rem;
+                width: calc(100% - 1rem);
+            }
+
+            #article-modal .h-64 {
+                height: 200px;
+            }
+
+            #article-modal .p-6 {
+                padding: 1rem;
+            }
+
+            #article-modal #modal-content {
+                font-size: 0.95rem !important;
+                line-height: 1.6 !important;
+            }
+
+            #article-modal #modal-title {
+                font-size: 1.5rem !important;
+            }
+
+            #article-modal .p-6.sm\:p-10 {
+                padding: 1rem !important;
+            }
+        }
+
+        @media (min-width: 641px) {
+            #blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            #blog-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            #blog-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        #blog-grid article {
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-\[fadeInUp_0\.5s_ease-out\] {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-slate-100 font-sans antialiased transition-colors duration-300">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center"><a href="index.html" class="font-heading font-bold text-2xl tracking-tight z-50">Thrinath<span class="text-brand-500"> Polanki</span></a></div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Home</a>
+                    <a href="index.html#about" class="text-sm font-medium hover:text-brand-500 transition-colors">About</a>
+                    <a href="index.html#trimitha" class="hover:opacity-80 transition-opacity flex items-center"><img src="Trimitha Logo.png" alt="Trimitha" class="h-8 w-auto" /></a>
+                    <a href="personal.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Personal</a>
+                    <a href="index.html#projects" class="text-sm font-medium hover:text-brand-500 transition-colors">Projects</a>
+                    <a href="blog.html" class="text-sm font-medium text-brand-600 dark:text-brand-400 font-bold transition-colors">Blog</a>
+                    <a href="index.html#contact" class="px-5 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:opacity-90 transition-all shadow-md">Let's Connect</a>
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors focus:outline-none"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline text-yellow-400"></i></button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center gap-4">
+                    <button id="mobile-theme-toggle" class="p-2 text-slate-700 dark:text-slate-300 focus:outline-none"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline text-yellow-400"></i></button>
+                    <button id="mobile-menu-btn" class="text-slate-900 dark:text-white p-2 focus:outline-none"><i class="fas fa-bars text-xl"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-dark-card border-b dark:border-dark-border shadow-xl absolute w-full left-0 top-20">
+            <div class="px-4 pt-2 pb-6 space-y-2 text-center">
+                <a href="index.html" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Home</a>
+                <a href="index.html#about" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">About</a>
+                <a href="index.html#trimitha" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><img src="Trimitha Logo.png" alt="Trimitha" class="h-8 w-auto mx-auto" /></a>
+                <a href="personal.html" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Personal</a>
+                <a href="index.html#projects" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Projects</a>
+                <a href="blog.html" class="block px-3 py-3 rounded-lg text-base font-medium bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-400 transition-colors">Blog</a>
+                <a href="index.html#contact" class="block px-3 py-3 mt-4 text-center rounded-lg text-base font-bold bg-brand-500 text-white shadow-md hover:bg-brand-600 transition-colors">Let's Connect</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="pt-32 pb-12 bg-slate-50 dark:bg-dark-bg px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <span class="text-brand-600 dark:text-brand-400 font-semibold tracking-wide uppercase text-sm mb-2 block">Insights & Thoughts</span>
+            <h1 class="font-heading text-4xl md:text-5xl font-bold mb-4 dark:text-white">The Founder's Journal</h1>
+            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto mb-8">Thoughts on technology, startups, and the journey of building Trimitha.</p>
+
+            <!-- Search Bar -->
+            <div class="max-w-lg mx-auto relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
+                </div>
+                <input type="text" id="search-input" placeholder="Search by title or category..." class="block w-full pl-11 pr-4 py-3 bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent shadow-sm dark:text-white transition-all placeholder-slate-400 dark:placeholder-slate-500" oninput="onSearchInput()" />
+            </div>
+
+            <!-- Category Filter Chips -->
+            <div id="category-chips" class="flex flex-wrap justify-center gap-2 mt-6"></div>
+        </div>
+    </header>
+
+    <!-- Featured Post -->
+    <section class="px-4 -mt-2 mb-4">
+        <div class="max-w-5xl mx-auto">
+            <div id="featured-section" class="hidden"></div>
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="pb-24 bg-slate-50 dark:bg-dark-bg min-h-screen px-4">
+        <div class="max-w-7xl mx-auto">
+            <div id="blog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div id="pagination" class="flex justify-center gap-2 mt-12"></div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="article-modal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity bg-slate-900 bg-opacity-80 backdrop-blur-sm" aria-hidden="true" onclick="closeArticleModal()"></div>
+            <div class="inline-block w-full max-w-3xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-2xl dark:bg-dark-card rounded-2xl relative border border-slate-200 dark:border-slate-700">
+                <button onclick="closeArticleModal()" class="absolute top-4 right-4 z-50 w-10 h-10 flex items-center justify-center bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-md transition-all duration-200 shadow-lg focus:outline-none transform hover:scale-105"><i class="fas fa-times text-lg"></i></button>
+                <div class="max-h-[85vh] overflow-y-auto">
+                    <div class="h-64 sm:h-80 w-full relative">
+                        <img id="modal-image" src="" alt="" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                            <span id="modal-category" class="px-3 py-1 text-xs font-bold text-white bg-brand-500 rounded-full mb-3 inline-block shadow-lg"></span>
+                            <h2 id="modal-title" class="text-2xl sm:text-4xl font-bold text-white leading-tight drop-shadow-md"></h2>
+                            <div class="flex items-center mt-3 text-slate-300 text-sm gap-4">
+                                <span><i class="far fa-calendar-alt mr-2"></i><span id="modal-date"></span></span>
+                                <span><i class="far fa-eye mr-2"></i><span id="modal-views"></span> views</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 sm:p-10">
+                        <div id="modal-content" class="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap text-lg"></div>
+                        <div id="modal-related" class="mt-10"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="font-heading font-bold text-2xl text-white block mb-2">Thrinath<span class="text-brand-500"> Polanki</span></span>
+            <p class="text-sm">Founder of Trimitha</p>
+            <p class="text-xs mt-8">&copy; 2026 Thrinath Polanki. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // BACKEND CONFIG
+        // ============================================
+        const API_CONFIG = {
+            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbw7QkifnJ1-nj_EkPbkbsLonOm9r2XxqYxHwGpjgkl75KKEh1o3zBSVcwDlutLTxbAg/exec'
+        };
+
+        const PAGE_SIZE = 8;
+        let allPosts = [];
+        let currentCategory = 'All';
+        let currentPage = 1;
+
+        function formatDate(d) {
+            // Handles real date values (returned as ISO strings, e.g.
+            // "2025-06-26T01:15:26.000Z") AND plain-text values typed
+            // directly into the sheet in DD/MM/YYYY [HH:mm[:ss]] format,
+            // which `new Date(...)` cannot parse reliably on its own.
+            let parsed = new Date(d);
+            if (isNaN(parsed.getTime())) {
+                const match = String(d).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+                if (match) {
+                    const [, day, month, year, hh = '0', mm = '0', ss = '0'] = match;
+                    parsed = new Date(Number(year), Number(month) - 1, Number(day), Number(hh), Number(mm), Number(ss));
+                }
+            }
+            if (isNaN(parsed.getTime())) return d; // give up gracefully, show raw value
+            return parsed.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ============================================
+        // LOAD BLOGS — fetches every Published post ONCE, including full
+        // content. Search/filter/pagination happen instantly client-side,
+        // and opening an article (see openArticlePost) reads straight from
+        // this already-loaded data — no second network call, so it can
+        // never fail or hang the way a per-post fetch could.
+        // ============================================
+        async function loadBlogs() {
+            showLoadingState();
+            try {
+                const res = await fetch(`${API_CONFIG.WEB_APP_URL}?action=blogs&pageSize=1000`);
+                const data = await res.json();
+                if (!data.success) { showErrorState(); return; }
+
+                allPosts = data.data.map(p => ({
+                    title: p.Title, category: p.Category, overview: p.Overview, content: p.Content,
+                    image: p.Image, slug: p.Slug, date: formatDate(p.Date),
+                    dateRaw: p.Date, author: p.Author, views: p.Views, featured: p.Featured
+                }));
+
+                renderCategoryChips();
+                renderFeatured(data.featured);
+                filterPosts();
+            } catch (err) {
+                showErrorState();
+            }
+        }
+
+        function showLoadingState() {
+            document.getElementById('blog-grid').innerHTML = `<div class="col-span-full text-center py-20">
+                <i class="fas fa-spinner fa-spin text-3xl text-brand-500"></i>
+                <p class="mt-4 text-slate-400">Loading posts...</p>
+            </div>`;
+        }
+
+        function showErrorState() {
+            document.getElementById('blog-grid').innerHTML = `<div class="col-span-full text-center py-20 text-slate-500">
+                <i class="fas fa-triangle-exclamation text-3xl mb-3 text-amber-400"></i>
+                <p>Couldn't load posts right now. Please try again later.</p>
+            </div>`;
+        }
+
+        // ============================================
+        // CATEGORY CHIPS
+        // ============================================
+        function renderCategoryChips() {
+            const container = document.getElementById('category-chips');
+            const categories = ['All', ...new Set(allPosts.map(p => p.category).filter(Boolean))];
+            container.innerHTML = categories.map(cat => `
+                <button data-cat="${cat}" class="cat-chip px-4 py-2 rounded-full text-sm font-medium border transition-colors ${cat === currentCategory
+                    ? 'bg-brand-500 text-white border-brand-500'
+                    : 'bg-white dark:bg-dark-card border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-brand-400'}">${cat}</button>
+            `).join('');
+            container.querySelectorAll('.cat-chip').forEach(btn => btn.addEventListener('click', () => {
+                currentCategory = btn.dataset.cat;
+                currentPage = 1;
+                renderCategoryChips();
+                filterPosts();
+            }));
+        }
+
+        // ============================================
+        // FEATURED POST
+        // ============================================
+        function renderFeatured(featured) {
+            const section = document.getElementById('featured-section');
+            if (!featured) {
+                section.classList.add('hidden');
+                section.innerHTML = '';
+                return;
+            }
+            section.classList.remove('hidden');
+            const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(featured.Title)}&background=random&color=fff&size=800`;
+            section.innerHTML = `
+                <div class="relative rounded-3xl overflow-hidden shadow-xl cursor-pointer group" id="featured-card">
+                    <img src="${featured.Image || fallbackImg}" onerror="this.onerror=null;this.src='${fallbackImg}';" class="w-full h-64 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
+                        <span class="px-3 py-1 text-xs font-bold text-white bg-brand-500 rounded-full mb-3 inline-block">★ Featured — ${featured.Category}</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2">${featured.Title}</h2>
+                        <p class="text-slate-200 text-sm sm:text-base max-w-2xl line-clamp-2">${featured.Overview}</p>
+                    </div>
+                </div>`;
+            document.getElementById('featured-card').addEventListener('click', () => {
+                openArticlePost({
+                    title: featured.Title, category: featured.Category, overview: featured.Overview,
+                    content: featured.Content, image: featured.Image, slug: featured.Slug,
+                    date: formatDate(featured.Date), dateRaw: featured.Date, views: featured.Views
+                });
+            });
+        }
+
+        // ============================================
+        // SEARCH + CATEGORY FILTER + PAGINATION
+        // ============================================
+        function onSearchInput() {
+            currentPage = 1;
+            filterPosts();
+        }
+
+        function filterPosts() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allPosts.filter(post =>
+                (currentCategory === 'All' || post.category === currentCategory) &&
+                (post.title.toLowerCase().includes(query) ||
+                 post.category.toLowerCase().includes(query) ||
+                 post.overview.toLowerCase().includes(query))
+            );
+            renderPagination(filtered.length);
+            const start = (currentPage - 1) * PAGE_SIZE;
+            renderPosts(filtered.slice(start, start + PAGE_SIZE));
+        }
+
+        function renderPagination(totalItems) {
+            const container = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button data-page="${i}" class="page-btn w-9 h-9 rounded-full text-sm font-semibold transition-colors ${i === currentPage
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-white dark:bg-dark-card border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-brand-400'}">${i}</button>`;
+            }
+            container.innerHTML = html;
+            container.querySelectorAll('.page-btn').forEach(btn => btn.addEventListener('click', () => {
+                currentPage = Number(btn.dataset.page);
+                filterPosts();
+                document.getElementById('blog-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }));
+        }
+
+        // ============================================
+        // RENDER POST CARDS
+        // ============================================
+        function renderPosts(posts) {
+            const grid = document.getElementById('blog-grid');
+            grid.innerHTML = '';
+
+            if (!posts || posts.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 text-slate-500">
+                    <i class="fas fa-pen-fancy text-4xl mb-4 text-slate-300 dark:text-slate-600"></i>
+                    <p class="text-lg font-medium">No posts found</p>
+                    <p class="text-sm text-slate-400 dark:text-slate-500 mt-1">Try a different search or category.</p>
+                </div>`;
+                return;
+            }
+
+            posts.forEach(post => {
+                const article = document.createElement('article');
+                article.className =
+                    'bg-white dark:bg-dark-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300 flex flex-col h-full animate-[fadeInUp_0.5s_ease-out] cursor-pointer';
+                article.dataset.slug = post.slug || '';
+                const fallbackImg =
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(post.title)}&background=random&color=fff&size=500`;
+
+                article.innerHTML = `
+                        <div class="h-40 bg-slate-200 dark:bg-slate-700 relative overflow-hidden group cursor-pointer">
+                            <img src="${post.image || fallbackImg}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${fallbackImg}';">
+                            <div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-brand-600 dark:text-brand-400">${post.category}</div>
+                        </div>
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="text-xs text-slate-500 mb-2 flex items-center justify-between">
+                                <span>${post.date}</span>
+                                <span><i class="far fa-eye mr-1"></i>${post.views || 0}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-3 line-clamp-2">${post.title}</h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm mb-3 line-clamp-3 flex-grow">${post.overview}</p>
+                            <button type="button" class="read-article-btn inline-flex items-center text-brand-600 dark:text-brand-400 font-semibold text-sm hover:underline mt-auto">Read Article <i class="fas fa-arrow-right ml-2"></i></button>
+                        </div>
+                    `;
+                grid.appendChild(article);
+            });
+        }
+
+        // Single delegated click handler for the whole grid — attached ONCE,
+        // outside renderPosts, so it can never fail to bind to a newly
+        // rendered card. Clicking anywhere on a card (image or button) opens
+        // it INSTANTLY using data already loaded — no network call here.
+        document.getElementById('blog-grid').addEventListener('click', (e) => {
+            const card = e.target.closest('article[data-slug]');
+            if (!card) return;
+            const slug = card.dataset.slug;
+            const post = allPosts.find(p => p.slug === slug);
+            if (!post) {
+                console.error('[blog] Could not find this post in the loaded data:', slug);
+                return;
+            }
+            openArticlePost(post);
+        });
+
+        // ============================================
+        // ARTICLE MODAL — opens instantly from data already in memory (no
+        // network call). Views are bumped in the background afterward,
+        // separately — see incrementViewInBackground below.
+        // ============================================
+        function openArticlePost(post) {
+            if (!post) return;
+            const modal = document.getElementById('article-modal');
+            modal.dataset.slug = post.slug || ''; // kept for reference/debugging only
+
+            const fallbackImg = `https://ui-avatars.com/api/?name=${encodeURIComponent(post.title)}&background=random&color=fff&size=800`;
+            const img = document.getElementById('modal-image');
+            img.src = post.image || fallbackImg;
+            img.onerror = function () { this.onerror = null; this.src = fallbackImg; };
+
+            document.getElementById('modal-category').textContent = post.category;
+            document.getElementById('modal-title').textContent = post.title;
+            document.getElementById('modal-date').textContent = post.date;
+            document.getElementById('modal-views').textContent = Number(post.views) || 0;
+            document.getElementById('modal-content').textContent = post.content || '';
+
+            renderRelated(post);
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            if (post.slug) incrementViewInBackground(post);
+        }
+
+        // Fire-and-forget: bumps the Views count in the sheet without
+        // making the person wait for it, and without ever being able to
+        // block or break opening the article itself.
+        function incrementViewInBackground(post) {
+            fetch(API_CONFIG.WEB_APP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'incrementView', slug: post.slug })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        post.views = data.views;
+                        document.getElementById('modal-views').textContent = data.views;
+                    } else {
+                        console.error('[blog] incrementView failed:', data.error);
+                    }
+                })
+                .catch(err => console.error('[blog] incrementView network error:', err));
+        }
+
+        function renderRelated(post) {
+            const container = document.getElementById('modal-related');
+            const related = allPosts
+                .filter(p => p.category === post.category && p.slug !== post.slug)
+                .slice(0, 3);
+            if (related.length === 0) { container.innerHTML = ''; return; }
+            container.innerHTML = `
+                <h4 class="text-lg font-bold mb-4 dark:text-white">Related Posts</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    ${related.map(r => {
+                        const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(r.title)}&background=random&color=fff&size=300`;
+                        return `<button type="button" class="related-item text-left rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all" data-slug="${r.slug}">
+                            <img src="${r.image || fallback}" onerror="this.onerror=null;this.src='${fallback}';" class="w-full h-24 object-cover" referrerpolicy="no-referrer">
+                            <div class="p-3"><p class="text-sm font-semibold line-clamp-2 dark:text-white">${r.title}</p></div>
+                        </button>`;
+                    }).join('')}
+                </div>`;
+        }
+
+        // Single delegated click handler for related posts — attached ONCE.
+        document.getElementById('modal-related').addEventListener('click', (e) => {
+            const btn = e.target.closest('.related-item');
+            if (!btn) return;
+            const post = allPosts.find(p => p.slug === btn.dataset.slug);
+            if (post) openArticlePost(post);
+        });
+
+        function closeArticleModal() {
+            document.getElementById('article-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+            delete document.getElementById('article-modal').dataset.slug;
+        }
+
+        // Kick off the initial load
+        loadBlogs();
+
+        // Consolidated Theme Toggle Logic
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        // Initialize Theme
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia(
+                '(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Attach Event Listeners to both Desktop and Mobile buttons
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
+
+        // Mobile Menu Logic
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+            document.querySelectorAll('#mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu
+                .classList.add('hidden')));
+        }
+    </script>
+
+</body>
+</html>
