@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Polanki Thrinath | AI & ML Engineer</title>
+    <meta name="description" content="Portfolio of Polanki Thrinath - Computer Science Engineer specializing in AI/ML and Web Development.">
+    
+    <!-- Fonts: Inter for UI, Fira Code for Tech -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons: Phosphor Icons (Lightweight & Modern) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind CSS (CDN for standalone portability) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Trimitha",
+      "description": "A technology-driven company built on Trust, Thought, and Technology with togetherness",
+      "url": "https://trimitha.co.in",
+      "image": "https://trimitha.co.in/Images/TrimithaLogo.png",
+      "sameAs": [
+        "https://www.linkedin.com/company/trimitha",
+        "https://www.instagram.com/trimitha.co/",
+        "https://twitter.com/trimithacompany"
+      ],
+      "knowsAbout": ["Web Development", "Entrepreneurship", "UX Design", "Digital Strategy"],
+      "founder": {
+        "@type": "Person",
+        "name": "Thrinath Polanki",
+        "url": "https://www.linkedin.com/in/thrinathpolanki",
+        "sameAs": [
+          "https://www.linkedin.com/in/thrinathpolanki",
+          "https://twitter.com/thrinath_bfe",
+          "https://www.instagram.com/thrinath.polanki"
+        ]
+      }
+    }
+    </script>
+
+    <!-- Configuration -->
+    <script>
+        // Check if tailwind is defined to prevent ReferenceError
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                            mono: ['Fira Code', 'monospace'],
+                        },
+                        colors: {
+                            slate: {
+                                850: '#151F32',
+                                900: '#0F172A',
+                                950: '#020617',
+                            },
+                            emerald: {
+                                400: '#34D399',
+                                500: '#10B981',
+                            }
+                        },
+                        backgroundImage: {
+                            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Utilities */
+        body {
+            background-color: #0F172A; /* Slate 900 */
+            color: #F8FAFC; /* Slate 50 */
+        }
+        
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #34D399, #60A5FA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Typewriter Cursor */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Card Hover Glow - optimized for desktop, subtle on mobile */
+        @media (hover: hover) {
+            .project-card:hover {
+                box-shadow: 0 0 25px rgba(52, 211, 153, 0.15);
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* Custom Scrollbar - Hidden on mobile for cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-emerald-500/10 rounded-full blur-[80px] md:blur-[100px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-500/10 rounded-full blur-[80px] md:blur-[100px]"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-6xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+            <a href="#" class="text-xl md:text-2xl font-bold font-mono tracking-tighter hover:text-emerald-400 transition-colors z-50 relative">
+                &lt;Thrinath Polanki&gt;
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#about" class="hover:text-emerald-400 transition-colors">About</a>
+                <a href="#skills" class="hover:text-emerald-400 transition-colors">Skills</a>
+                <a href="#projects" class="hover:text-emerald-400 transition-colors">Projects</a>
+                <a href="#achievements" class="hover:text-emerald-400 transition-colors">Credentials</a>
+                <a href="#contact" class="px-5 py-2.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/50 rounded-full hover:bg-emerald-500 hover:text-white transition-all duration-300">Let's Talk</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-2xl text-slate-300 hover:text-white z-50 relative p-2 focus:outline-none">
+                <i class="ph ph-list" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 flex flex-col items-center justify-center gap-8 md:hidden h-screen w-screen">
+            <a href="#about" class="text-2xl font-medium text-slate-200 mobile-link hover:text-emerald-400 transition-colors">About</a>
+            <a href="#skills" class="text-2xl font-medium text-slate-200 mobile-link hover:text-emerald-400 transition-colors">Skills</a>
+            <a href="#projects" class="text-2xl font-medium text-slate-200 mobile-link hover:text-emerald-400 transition-colors">Projects</a>
+            <a href="#achievements" class="text-2xl font-medium text-slate-200 mobile-link hover:text-emerald-400 transition-colors">Credentials</a>
+            <a href="#contact" class="text-2xl font-medium text-emerald-400 mobile-link">Contact Me</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="min-h-screen flex items-center justify-center pt-20 px-6" id="home">
+        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-mono text-emerald-400 mb-6">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                Available for Internship Opportunities
+            </div>
+            
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
+                Building Intelligent <br>
+                <span class="text-gradient">Web Solutions</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-slate-400 mb-8 h-8 font-mono">
+                I am <span id="typewriter" class="text-slate-100"></span><span class="cursor-blink text-emerald-400">|</span>
+            </p>
+
+            <p class="text-slate-400 max-w-2xl mx-auto mb-10 text-base md:text-lg leading-relaxed px-4">
+                Computer Science Engineer (AI & ML) passionate about bridging the gap between complex algorithms and user-friendly web interfaces.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto px-4 sm:px-0">
+                <a href="#projects" class="w-full sm:w-auto px-8 py-3.5 bg-emerald-500 text-slate-900 font-bold rounded-lg hover:bg-emerald-400 transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] text-center">
+                    View My Work
+                </a>
+                <a href="https://github.com/thrinathpolanki" target="_blank" class="w-full sm:w-auto px-8 py-3.5 bg-slate-800 text-slate-200 font-medium rounded-lg border border-slate-700 hover:bg-slate-700 transition-all flex items-center justify-center gap-2 text-center">
+                    <i class="ph ph-github-logo text-xl"></i> GitHub
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- About & Education Section -->
+    <section id="about" class="py-16 md:py-24 px-6 bg-slate-850/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+                
+                <!-- Bio -->
+                <div data-aos="fade-right">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3">
+                        <i class="ph ph-user text-emerald-400"></i> About Me
+                    </h2>
+                    <p class="text-slate-400 leading-relaxed mb-6 text-sm md:text-base">
+                        I am currently pursuing a <strong>B.Tech in Computer Science & Engineering (AI & ML)</strong> at Vasireddy Venkatadri Institute of Technology.
+                    </p>
+                    <p class="text-slate-400 leading-relaxed mb-6 text-sm md:text-base">
+                        My journey is driven by a curiosity to explore emerging technologies. I specialize in <strong>Python</strong> and <strong>Web Development</strong>, with a knack for solving real-world problems through code. Whether it's building an AI-powered prescription reader or a fully responsive corporate website, I focus on clean code and user impact.
+                    </p>
+                    <div class="flex gap-4 mt-8">
+                        <div class="p-4 bg-slate-800 rounded-lg border border-slate-700 w-1/2 text-center">
+                            <div class="text-2xl md:text-3xl font-bold text-emerald-400 mb-1">8.23</div>
+                            <div class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider">Current CGPA</div>
+                        </div>
+                        <div class="p-4 bg-slate-800 rounded-lg border border-slate-700 w-1/2 text-center">
+                            <div class="text-2xl md:text-3xl font-bold text-emerald-400 mb-1">5+</div>
+                            <div class="text-[10px] md:text-xs text-slate-500 uppercase tracking-wider">Certifications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education Timeline -->
+                <div data-aos="fade-left">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-8 flex items-center gap-3">
+                        <i class="ph ph-graduation-cap text-emerald-400"></i> Education
+                    </h2>
+                    
+                    <div class="space-y-8 border-l-2 border-slate-700 ml-3 pl-8 relative">
+                        <!-- Degree -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-1 h-5 w-5 rounded-full border-4 border-slate-900 bg-emerald-500"></span>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-100">B.Tech - CSE (AI & ML)</h3>
+                            <p class="text-emerald-400 font-mono text-sm mb-1">2024 - Present</p>
+                            <p class="text-slate-400 text-sm md:text-base">Vasireddy Venkatadri Institute of Technology</p>
+                        </div>
+                        
+                        <!-- Intermediate -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-1 h-5 w-5 rounded-full border-4 border-slate-900 bg-slate-600"></span>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-100">Intermediate Education</h3>
+                            <p class="text-slate-500 font-mono text-sm mb-1">2022 - 2024</p>
+                            <p class="text-slate-400 text-sm md:text-base">Deepthi Junior College</p>
+                            <p class="text-sm text-slate-500 mt-1">Score: 95.4%</p>
+                        </div>
+
+                        <!-- School -->
+                        <div class="relative">
+                            <span class="absolute -left-[41px] top-1 h-5 w-5 rounded-full border-4 border-slate-900 bg-slate-600"></span>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-100">Secondary School</h3>
+                            <p class="text-slate-500 font-mono text-sm mb-1">2021 - 2022</p>
+                            <p class="text-slate-400 text-sm md:text-base">Sri Chakra High School</p>
+                            <p class="text-sm text-slate-500 mt-1">Score: 89%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-16 md:py-24 px-6 relative">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-2xl md:text-4xl font-bold mb-4">Technical Arsenal</h2>
+                <p class="text-slate-400 text-sm md:text-base">Tools and technologies I use to bring ideas to life</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- Languages -->
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 hover:border-emerald-500/30 transition-all" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="h-12 w-12 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-400 text-2xl mb-4">
+                        <i class="ph ph-code"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Languages</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Python</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Java</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">SQL</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">JavaScript</span>
+                    </div>
+                </div>
+
+                <!-- Web Tech -->
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 hover:border-emerald-500/30 transition-all" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="h-12 w-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-400 text-2xl mb-4">
+                        <i class="ph ph-globe"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Web Frameworks</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">HTML5 / CSS3</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Flask</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Firebase</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Supabase</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Google Apps Script</span>
+                    </div>
+                </div>
+
+                <!-- Core & Tools -->
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 hover:border-emerald-500/30 transition-all" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="h-12 w-12 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-400 text-2xl mb-4">
+                        <i class="ph ph-cpu"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Core & Tools</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">DSA</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">DBMS</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">Git & GitHub</span>
+                        <span class="px-3 py-1 bg-slate-700 text-sm rounded-md text-slate-300">n8n Automation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 md:py-24 px-6 bg-slate-850/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 md:mb-16" data-aos="fade-up">
+                <div class="text-center md:text-left w-full md:w-auto">
+                    <h2 class="text-2xl md:text-4xl font-bold mb-2">Featured Projects</h2>
+                    <p class="text-slate-400 text-sm md:text-base">Real-world applications delivering impact.</p>
+                </div>
+                <a href="https://github.com/thrinathpolanki" target="_blank" class="hidden md:flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors mt-4 md:mt-0">
+                    View GitHub <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                
+                <!-- Project 1: Rxplain -->
+                <article class="project-card bg-slate-800 rounded-xl overflow-hidden border border-slate-700 transition-all duration-300 flex flex-col h-full" data-aos="fade-up">
+                    <div class="h-48 bg-gradient-to-br from-blue-900 to-slate-900 flex items-center justify-center relative overflow-hidden group">
+                        <!-- Abstract Pattern -->
+                        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#60A5FA 1px, transparent 1px); background-size: 20px 20px;"></div>
+                        <i class="ph ph-first-aid text-6xl text-blue-400 z-10 group-hover:scale-110 transition-transform duration-500"></i>
+                    </div>
+                    <div class="p-6 md:p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-slate-100">Rxplain</h3>
+                            <span class="px-2 py-1 text-xs font-mono bg-blue-500/10 text-blue-400 rounded">AI Healthcare</span>
+                        </div>
+                        <p class="text-slate-400 mb-6 text-sm leading-relaxed">
+                            An AI-powered interpreter that simplifies medical prescriptions. It converts complex medical jargon into clear summaries, schedules, and dosage timings with multilingual support and speech playback.
+                        </p>
+                        
+                        <div class="mt-auto">
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">Gemini API</span>
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">Google Apps Script</span>
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">HTML/CSS/JS</span>
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">Firebase</span>
+                            </div>
+                            <div class="flex gap-4">
+                                <a href="https://rxplain.vercel.app" target="_blank" class="flex-1 flex items-center justify-center py-3 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors">
+                                    Visit Site
+                                </a>
+                                <a href="https://github.com/thrinathpolanki/Rxplain" class="px-4 py-3 text-slate-400 hover:text-white transition-colors border border-slate-700 rounded-lg flex items-center justify-center">
+                                    <i class="ph ph-github-logo text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Project 2: Trimitha -->
+                <article class="project-card bg-slate-800 rounded-xl overflow-hidden border border-slate-700 transition-all duration-300 flex flex-col h-full" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-48 bg-gradient-to-br from-emerald-900 to-slate-900 flex items-center justify-center relative overflow-hidden group">
+                        <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(45deg, #10B981 25%, transparent 25%, transparent 50%, #10B981 50%, #10B981 75%, transparent 75%, transparent); background-size: 20px 20px;"></div>
+                        <i class="ph ph-buildings text-6xl text-emerald-400 z-10 group-hover:scale-110 transition-transform duration-500"></i>
+                    </div>
+                    <div class="p-6 md:p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-slate-100">Trimitha</h3>
+                            <span class="px-2 py-1 text-xs font-mono bg-emerald-500/10 text-emerald-400 rounded">Corporate Web Application</span>
+                        </div>
+                        <p class="text-slate-400 mb-6 text-sm leading-relaxed">
+                            A fully responsive company portal featuring a secure employee login system, SEO optimization, and a structured layout highlighting the company's core values. Focuses on performance and brand consistency.
+                        </p>
+                        
+                        <div class="mt-auto">
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">HTML/CSS/JS</span>
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">Google Apps Script</span>
+                                <span class="text-xs font-mono text-slate-500 border border-slate-700 px-2 py-1 rounded">SEO</span>
+                            </div>
+                            <div class="flex gap-4">
+                                <a href="https://trimitha.co.in" target="_blank" class="flex-1 flex items-center justify-center py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded-lg transition-colors">
+                                    Visit Site
+                                </a>
+                                <a href="https://github.com/thrinathpolanki/trimitha" class="px-4 py-3 text-slate-400 hover:text-white transition-colors border border-slate-700 rounded-lg flex items-center justify-center">
+                                    <i class="ph ph-github-logo text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+            
+            <div class="text-center mt-8 md:hidden">
+                <a href="https://github.com/thrinathpolanki" target="_blank" class="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors">
+                    View More on GitHub <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements & Certifications -->
+    <section id="achievements" class="py-16 md:py-24 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center" data-aos="fade-up">Certifications & Achievements</h2>
+            
+            <!-- Certifications Subsection -->
+            <div class="mb-12">
+                <h3 class="text-lg md:text-xl font-bold mb-6 text-emerald-400 border-l-4 border-emerald-500 pl-3 flex items-center gap-2">
+                    <i class="ph ph-certificate"></i> Certifications
+                </h3>
+                <div class="space-y-4">
+                    <!-- Certificate Item 1 -->
+                    <a href="https://www.udemy.com/certificate/UC-06813019-d0f0-42ac-8c5e-7f39e875985c/" target="_blank" class="block p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700 hover:border-emerald-500 hover:translate-x-2 transition-all group" data-aos="fade-left">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="h-10 w-10 bg-yellow-500/10 text-yellow-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="ph ph-certificate text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200 group-hover:text-emerald-400 transition-colors text-sm md:text-base">100 Days of Code: Complete Python Pro</h4>
+                                    <p class="text-xs md:text-sm text-slate-400">Udemy</p>
+                                </div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-slate-500 group-hover:text-emerald-400"></i>
+                        </div>
+                    </a>
+
+                    <!-- Certificate Item 2 -->
+                    <a href="https://badges.plus.columbia.edu/442acd70-d201-431a-bad9-7f0bf1aff95d" target="_blank" class="block p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700 hover:border-emerald-500 hover:translate-x-2 transition-all group" data-aos="fade-left" data-aos-delay="50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="h-10 w-10 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="ph ph-robot text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200 group-hover:text-emerald-400 transition-colors text-sm md:text-base">Prompt Engineering & Programming with OPENAI</h4>
+                                    <p class="text-xs md:text-sm text-slate-400">Columbia+</p>
+                                </div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-slate-500 group-hover:text-emerald-400"></i>
+                        </div>
+                    </a>
+
+                    <!-- Certificate Item 3 -->
+                    <a href="https://www.coursera.org/account/accomplishments/records/F3U3D8XOLP75" target="_blank" class="block p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700 hover:border-emerald-500 hover:translate-x-2 transition-all group" data-aos="fade-left" data-aos-delay="100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="h-10 w-10 bg-indigo-500/10 text-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="ph ph-code-block text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200 group-hover:text-emerald-400 transition-colors text-sm md:text-base">Foundations of Coding Full-Stack</h4>
+                                    <p class="text-xs md:text-sm text-slate-400">Coursera</p>
+                                </div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-slate-500 group-hover:text-emerald-400"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Certificate Item 4 -->
+                     <a href="https://media.geeksforgeeks.org/courses/certificates/5def0d037818c3c76ec52781f5479a84.pdf" target="_blank" class="block p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700 hover:border-emerald-500 hover:translate-x-2 transition-all group" data-aos="fade-left" data-aos-delay="150">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="h-10 w-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="ph ph-database text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-200 group-hover:text-emerald-400 transition-colors text-sm md:text-base">SQL Foundation</h4>
+                                    <p class="text-xs md:text-sm text-slate-400">GeeksForGeeks</p>
+                                </div>
+                            </div>
+                            <i class="ph ph-arrow-square-out text-slate-500 group-hover:text-emerald-400"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Achievements Subsection -->
+            <div>
+                <h3 class="text-lg md:text-xl font-bold mb-6 text-yellow-400 border-l-4 border-yellow-500 pl-3 flex items-center gap-2">
+                    <i class="ph ph-trophy"></i> Achievements
+                </h3>
+                
+                <!-- Achievement 1 -->
+                <div onclick="openPdfModal('https://drive.google.com/file/d/1X9jl_JbRcs-pK06HsbTS5N40pVek94bN/preview', 'Google for Startups Certificate')" class="block p-4 md:p-6 bg-slate-800/80 rounded-xl border border-dashed border-slate-600 hover:border-yellow-500/50 hover:bg-slate-800 transition-all cursor-pointer group" data-aos="fade-up">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="h-12 w-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center shrink-0">
+                                <i class="ph ph-google-logo text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-100 text-base md:text-lg group-hover:text-yellow-400 transition-colors">Google for Startups</h4>
+                                <p class="text-xs md:text-sm text-slate-400">Certified in Startup School: Prompt to Prototype</p>
+                            </div>
+                        </div>
+                        <i class="ph ph-eye text-slate-500 group-hover:text-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-24 px-6 bg-slate-850/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Let's Create Something Amazing</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                    Whether you have a question, a project idea, or just want to discuss the latest in AI, I'm just a message away.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12 items-start">
+                <!-- Contact Info (Left Side) -->
+                <div class="space-y-6 order-2 md:order-1">
+                    <a href="mailto:polankithrinath@gmail.com" class="flex items-center gap-6 p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-all group">
+                        <div class="h-12 w-12 md:h-14 md:w-14 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all flex-shrink-0">
+                            <i class="ph ph-envelope text-2xl md:text-3xl"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h3 class="font-bold text-base md:text-lg text-slate-100">Email Me</h3>
+                            <p class="text-slate-400 text-sm truncate">polankithrinath@gmail.com</p>
+                        </div>
+                    </a>
+
+                    <a href="https://linkedin.com/in/thrinathpolanki" target="_blank" class="flex items-center gap-6 p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all group">
+                        <div class="h-12 w-12 md:h-14 md:w-14 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all flex-shrink-0">
+                            <i class="ph ph-linkedin-logo text-2xl md:text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base md:text-lg text-slate-100">LinkedIn</h3>
+                            <p class="text-slate-400 text-sm">Connect Professionally</p>
+                        </div>
+                    </a>
+
+                    <!-- Resume Download Action -->
+                    <div class="p-4 md:p-6 bg-slate-800 rounded-xl border border-slate-700">
+                        <h3 class="font-bold text-base md:text-lg text-slate-100 mb-4">View my Resume</h3>
+                         <button onclick="openPdfModal('https://drive.google.com/file/d/1sxLJJ2tyEPf04qi8r-XLujvMqk9gArR_/preview', 'My Resume')" class="w-full inline-flex justify-center items-center gap-2 px-8 py-3 bg-slate-100 text-slate-900 font-bold rounded-lg hover:bg-white transition-all text-sm md:text-base">
+                            <i class="ph ph-eye"></i> View Resume
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Form (Right Side) -->
+                <form id="contactForm" class="bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-700 shadow-xl order-1 md:order-2">
+                    <div class="mb-6">
+                        <label for="name" class="block text-sm font-medium text-slate-400 mb-2">Name</label>
+                        <input type="text" id="name" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-slate-100 placeholder-slate-500 transition-all" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="email" class="block text-sm font-medium text-slate-400 mb-2">Email</label>
+                        <input type="email" id="email" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-slate-100 placeholder-slate-500 transition-all" placeholder="john@example.com" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="message" class="block text-sm font-medium text-slate-400 mb-2">Message</label>
+                        <textarea id="message" rows="4" class="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-slate-100 placeholder-slate-500 transition-all resize-none" placeholder="Tell me about your project..." required></textarea>
+                    </div>
+
+                    <!-- Honeypot field: hidden from real visitors, bots fill it in -->
+                    <div style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
+                        <label>Website</label>
+                        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                        Send Message <i class="ph ph-paper-plane-right ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-slate-800 text-center text-slate-500 text-xs md:text-sm">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>© 2026 Polanki Thrinath. All rights reserved.</p>
+            <div class="flex gap-6">
+                <a href="https://github.com/thrinathpolanki" class="hover:text-emerald-400 transition-colors"><i class="ph ph-github-logo text-lg md:text-xl"></i></a>
+                <a href="https://linkedin.com/in/thrinathpolanki" class="hover:text-emerald-400 transition-colors"><i class="ph ph-linkedin-logo text-lg md:text-xl"></i></a>
+                <a href="mailto:polankithrinath@gmail.com" class="hover:text-emerald-400 transition-colors"><i class="ph ph-envelope text-lg md:text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PDF Modal -->
+    <div id="pdf-modal" class="fixed inset-0 z-[60] hidden bg-slate-900/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-slate-800 w-[95%] max-w-4xl h-[80vh] md:h-[85vh] rounded-2xl border border-slate-700 shadow-2xl flex flex-col overflow-hidden relative">
+            <div class="p-3 md:p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+                <h3 id="modal-title" class="font-bold text-slate-100 flex items-center gap-2 text-sm md:text-lg"><i class="ph ph-file-pdf text-emerald-400"></i> Document Preview</h3>
+                <button onclick="closePdfModal()" class="text-slate-400 hover:text-white transition-colors p-2">
+                    <i class="ph ph-x text-xl md:text-2xl"></i>
+                </button>
+            </div>
+            <iframe id="modal-iframe" src="" class="w-full h-full border-0"></iframe>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 z-[70] hidden bg-slate-900/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-slate-800 p-6 md:p-8 rounded-2xl border border-emerald-500/50 shadow-2xl flex flex-col items-center max-w-sm w-full text-center transform scale-100 transition-all mx-4">
+            <div class="h-14 w-14 md:h-16 md:w-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-6 text-emerald-400">
+                <i class="ph ph-check-circle text-3xl md:text-4xl"></i>
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold text-slate-100 mb-2">Message Sent!</h3>
+            <p class="text-slate-400 mb-8 text-sm md:text-base">Thanks for reaching out. I'll get back to you as soon as possible.</p>
+            <button onclick="closeSuccessModal()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold rounded-lg transition-colors shadow-lg shadow-emerald-500/20">
+                Done
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Modal (same visual language as Success Modal) -->
+    <div id="error-modal" class="fixed inset-0 z-[70] hidden bg-slate-900/80 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-slate-800 p-6 md:p-8 rounded-2xl border border-amber-500/50 shadow-2xl flex flex-col items-center max-w-sm w-full text-center transform scale-100 transition-all mx-4">
+            <div class="h-14 w-14 md:h-16 md:w-16 bg-amber-500/20 rounded-full flex items-center justify-center mb-6 text-amber-400">
+                <i class="ph ph-warning-circle text-3xl md:text-4xl"></i>
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold text-slate-100 mb-2">Couldn't Send Message</h3>
+            <p class="text-slate-400 mb-8 text-sm md:text-base">Try again after some time.</p>
+            <button onclick="closeErrorModal()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-lg transition-colors shadow-lg shadow-amber-500/20">
+                Okay
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Animations
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
+        });
+
+        // Typewriter Effect
+        const words = ["AI/ML Enthusiast", "Web Developer", "Problem Solver"];
+        let i = 0;
+        let timer;
+
+        function typeWriter() {
+            const heading = document.getElementById("typewriter");
+            const word = words[i];
+            const current = heading.innerHTML;
+            
+            if (current.length < word.length) {
+                heading.innerHTML = word.substring(0, current.length + 1);
+                timer = setTimeout(typeWriter, 100);
+            } else {
+                setTimeout(erase, 2000);
+            }
+        }
+
+        function erase() {
+            const heading = document.getElementById("typewriter");
+            const current = heading.innerHTML;
+            
+            if (current.length > 0) {
+                heading.innerHTML = current.substring(0, current.length - 1);
+                timer = setTimeout(erase, 50);
+            } else {
+                i = (i + 1) % words.length;
+                typeWriter();
+            }
+        }
+
+        window.onload = typeWriter;
+
+        // Mobile Menu Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        const menuIcon = document.getElementById('menu-icon');
+
+        function toggleMenu() {
+            const isClosed = mobileMenu.classList.contains('translate-x-full');
+            
+            if (isClosed) {
+                mobileMenu.classList.remove('translate-x-full');
+                document.body.classList.add('overflow-hidden');
+                menuIcon.classList.replace('ph-list', 'ph-x');
+            } else {
+                mobileMenu.classList.add('translate-x-full');
+                document.body.classList.remove('overflow-hidden');
+                menuIcon.classList.replace('ph-x', 'ph-list');
+            }
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+            } else {
+                nav.classList.remove('shadow-lg');
+            }
+        });
+
+        // PDF Modal Logic
+        function openPdfModal(url, title) {
+            const modal = document.getElementById('pdf-modal');
+            const iframe = document.getElementById('modal-iframe');
+            const modalTitle = document.getElementById('modal-title');
+            
+            iframe.src = url;
+            if(title) {
+                modalTitle.innerHTML = `<i class="ph ph-file-pdf text-emerald-400"></i> ${title}`;
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePdfModal() {
+            const modal = document.getElementById('pdf-modal');
+            const iframe = document.getElementById('modal-iframe');
+            
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                iframe.src = '';
+            }, 300);
+        }
+
+        document.getElementById('pdf-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePdfModal();
+            }
+        });
+
+        // Success Modal Logic
+        function openSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Error Modal Logic
+        function openErrorModal() {
+            const modal = document.getElementById('error-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeErrorModal() {
+            const modal = document.getElementById('error-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // ============================================
+        // BACKEND CONFIG — same values go in all 5 HTML files
+        // ============================================
+        const API_CONFIG = {
+            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyDX-F0xouMP66e-kWMQCA_qwF0vL6wmKjuU43wIQ4nlPN3Hwipg4knXhRBFCZFNl9R/exec',
+            API_KEY: '63b49552-38af-45c6-bcff-304a748a2772'
+        };
+
+        // ============================================
+        // SUBMIT CONTACT FORM — sends to Google Apps Script backend
+        // ============================================
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Sending...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            const payload = {
+                action: 'submitForm',
+                page: 'portfolio',
+                apiKey: API_CONFIG.API_KEY,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                website: document.getElementById('website').value, // honeypot
+                referrer: document.referrer,
+                origin: window.location.origin
+            };
+
+            try {
+                const res = await fetch(API_CONFIG.WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    openSuccessModal();
+                    contactForm.reset();
+                } else {
+                    // Never surface the backend's specific reason (rate limit,
+                    // duplicate, etc.) — just a friendly retry prompt. The
+                    // real reason is still visible to you in the Apps Script
+                    // Executions log.
+                    openErrorModal();
+                }
+            } catch (err) {
+                openErrorModal();
+            }
+
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+        });
+    </script>
+</body>
+</html>
