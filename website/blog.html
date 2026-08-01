@@ -181,40 +181,61 @@
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex-shrink-0 flex items-center"><a href="index.html" class="font-heading font-bold text-2xl tracking-tight z-50">Thrinath<span class="text-brand-500"> Polanki</span></a></div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Home</a>
-                    <a href="index.html#about" class="text-sm font-medium hover:text-brand-500 transition-colors">About</a>
-                    <a href="index.html#trimitha" class="hover:opacity-80 transition-opacity flex items-center"><img src="Trimitha Logo.png" alt="Trimitha" class="h-8 w-auto" /></a>
-                    <a href="personal.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Personal</a>
-                    <a href="index.html#projects" class="text-sm font-medium hover:text-brand-500 transition-colors">Projects</a>
-                    <a href="blog.html" class="text-sm font-medium text-brand-600 dark:text-brand-400 font-bold transition-colors">Blog</a>
-                    <a href="index.html#contact" class="px-5 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:opacity-90 transition-all shadow-md">Let's Connect</a>
-                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors focus:outline-none"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline text-yellow-400"></i></button>
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+            <div class="flex justify-between h-16 sm:h-20 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="index.html" class="font-heading font-bold text-lg sm:text-2xl tracking-tight z-50">
+                        Polanki<span class="text-brand-500"> Thrinath</span>
+                    </a>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center gap-4">
-                    <button id="mobile-theme-toggle" class="p-2 text-slate-700 dark:text-slate-300 focus:outline-none"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:inline text-yellow-400"></i></button>
-                    <button id="mobile-menu-btn" class="text-slate-900 dark:text-white p-2 focus:outline-none"><i class="fas fa-bars text-xl"></i></button>
+                <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                    <a href="index.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Home</a>
+                    <a href="#about" class="text-sm font-medium hover:text-brand-500 transition-colors">About</a>
+                    <a href="#trimitha" class="hover:opacity-80 transition-opacity flex items-center">
+                        <img src="Trimitha%20Logo.png" alt="Trimitha - Founded by Polanki Thrinath" class="h-7 w-auto">
+                    </a>
+                    <a href="personal.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Personal</a>
+                    <a href="#projects" class="text-sm font-medium hover:text-brand-500 transition-colors">Projects</a>
+                    <a href="blog.html" class="text-sm font-medium hover:text-brand-500 transition-colors">Blog</a>
+                    <a href="coo.html" class="text-sm font-medium text-purple-500 hover:text-purple-600 transition-colors">COO</a>
+                    <a href="#contact" class="px-4 py-2 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-semibold hover:opacity-90 transition-all shadow-md">
+                        Connect
+                    </a>
+                    
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500" aria-label="Toggle Dark Mode">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
+                    </button>
+                </div>
+
+                <div class="md:hidden flex items-center gap-2">
+                    <button id="mobile-theme-toggle" class="p-2 text-slate-700 dark:text-slate-300 focus:outline-none">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline text-yellow-400"></i>
+                    </button>
+                    
+                    <button id="mobile-menu-btn" class="text-slate-900 dark:text-white p-2 focus:outline-none" aria-label="Open Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-dark-card border-b dark:border-dark-border shadow-xl absolute w-full left-0 top-20">
-            <div class="px-4 pt-2 pb-6 space-y-2 text-center">
-                <a href="index.html" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Home</a>
-                <a href="index.html#about" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">About</a>
-                <a href="index.html#trimitha" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><img src="Trimitha Logo.png" alt="Trimitha" class="h-8 w-auto mx-auto" /></a>
-                <a href="personal.html" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Personal</a>
-                <a href="index.html#projects" class="block px-3 py-3 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Projects</a>
-                <a href="blog.html" class="block px-3 py-3 rounded-lg text-base font-medium bg-brand-50 dark:bg-slate-800 text-brand-600 dark:text-brand-400 transition-colors">Blog</a>
-                <a href="index.html#contact" class="block px-3 py-3 mt-4 text-center rounded-lg text-base font-bold bg-brand-500 text-white shadow-md hover:bg-brand-600 transition-colors">Let's Connect</a>
+        
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-dark-card border-b dark:border-dark-border shadow-xl absolute w-full left-0 top-16 sm:top-20 max-h-[80vh] overflow-y-auto">
+            <div class="px-4 pt-2 pb-6 space-y-1 text-center">
+                <a href="index.html" class="block px-3 py-2.5 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Home</a>
+                <a href="#about" class="block px-3 py-2.5 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">About</a>
+                <a href="#trimitha" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <img src="Trimitha%20Logo.png" alt="Trimitha" class="h-7 w-auto mx-auto">
+                </a>
+                <a href="personal.html" class="block px-3 py-2.5 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Personal</a>
+                <a href="#projects" class="block px-3 py-2.5 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Projects</a>
+                <a href="blog.html" class="block px-3 py-2.5 rounded-lg text-base font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Blog</a>
+                <a href="coo.html" class="block px-3 py-2.5 rounded-lg text-base font-medium text-purple-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">COO & President</a>
+                <a href="#contact" class="block px-3 py-3 mt-2 text-center rounded-lg text-base font-bold bg-brand-500 text-white shadow-md hover:bg-brand-600 transition-colors">
+                    Let's Connect
+                </a>
             </div>
         </div>
     </nav>
@@ -298,7 +319,7 @@
         // BACKEND CONFIG
         // ============================================
         const API_CONFIG = {
-            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbw7QkifnJ1-nj_EkPbkbsLonOm9r2XxqYxHwGpjgkl75KKEh1o3zBSVcwDlutLTxbAg/exec'
+            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbw5ILSxLyQFrrNCCE4YyQ3m2fmB7MjpvUf03-t9wO2pm8lQrmy-46fQHfKt0vft_m_5/exec'
         };
 
         const PAGE_SIZE = 8;
