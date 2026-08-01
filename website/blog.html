@@ -301,7 +301,10 @@
                             <h3 class="text-lg font-bold mb-2 dark:text-white">Overview</h3>
                             <p id="modal-overview" class="text-slate-600 dark:text-slate-400 text-base leading-relaxed"></p>
                         </div>
-                        <div id="modal-content" class="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap text-lg"></div>
+                        <div id="modal-content-section">
+                            <h3 class="text-lg font-bold mb-2 dark:text-white">Content</h3>
+                            <div id="modal-content" class="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap text-lg"></div>
+                        </div>
                         <div id="modal-related" class="mt-10"></div>
                     </div>
                 </div>
@@ -571,6 +574,7 @@
             }
 
             document.getElementById('modal-content').textContent = post.content || '';
+            document.getElementById('modal-content-section').classList.toggle('hidden', !post.content);
 
             renderRelated(post);
 
