@@ -297,6 +297,10 @@
                         </div>
                     </div>
                     <div class="p-6 sm:p-10">
+                        <div id="modal-overview-section" class="mb-6 hidden">
+                            <h3 class="text-lg font-bold mb-2 dark:text-white">Overview</h3>
+                            <p id="modal-overview" class="text-slate-600 dark:text-slate-400 text-base leading-relaxed"></p>
+                        </div>
                         <div id="modal-content" class="text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap text-lg"></div>
                         <div id="modal-related" class="mt-10"></div>
                     </div>
@@ -319,7 +323,7 @@
         // BACKEND CONFIG
         // ============================================
         const API_CONFIG = {
-            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbw5ILSxLyQFrrNCCE4YyQ3m2fmB7MjpvUf03-t9wO2pm8lQrmy-46fQHfKt0vft_m_5/exec'
+            WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbw7QkifnJ1-nj_EkPbkbsLonOm9r2XxqYxHwGpjgkl75KKEh1o3zBSVcwDlutLTxbAg/exec'
         };
 
         const PAGE_SIZE = 8;
@@ -557,6 +561,15 @@
             document.getElementById('modal-title').textContent = post.title;
             document.getElementById('modal-date').textContent = post.date;
             document.getElementById('modal-views').textContent = Number(post.views) || 0;
+
+            const overviewSection = document.getElementById('modal-overview-section');
+            if (post.overview) {
+                document.getElementById('modal-overview').textContent = post.overview;
+                overviewSection.classList.remove('hidden');
+            } else {
+                overviewSection.classList.add('hidden');
+            }
+
             document.getElementById('modal-content').textContent = post.content || '';
 
             renderRelated(post);
