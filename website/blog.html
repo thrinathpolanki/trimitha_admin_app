@@ -337,7 +337,10 @@
                 const data = await res.json();
                 if (!data.success) { showErrorState(); return; }
 
-                allPosts = data.data.map(p => ({
+                allPosts = data.data.map((p, idx) => ({
+                    _uid: idx, // guaranteed-unique client-side id — never relies on Slug being
+                    // present or unique, so a blank/duplicate Slug in the sheet can no
+                    // longer cause two different posts to resolve to the same card.
                     title: p.Title, category: p.Category, overview: p.Overview, content: p.Content,
                     image: p.Image, slug: p.Slug, date: formatDate(p.Date),
                     dateRaw: p.Date, author: p.Author, views: p.Views, featured: p.Featured
@@ -474,7 +477,8 @@
                 const article = document.createElement('article');
                 article.className =
                     'bg-white dark:bg-dark-card rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all duration-300 flex flex-col h-full animate-[fadeInUp_0.5s_ease-out] cursor-pointer';
-                article.dataset.slug = post.slug || '';
+                article.dataset.slug = post.slug || ''; // kept for reference/debugging only
+                article.dataset.uid = post._uid; // the real identifier used to reopen this exact post
                 const fallbackImg =
                     `https://ui-avatars.com/api/?name=${encodeURIComponent(post.title)}&background=random&color=fff&size=500`;
 
@@ -502,12 +506,12 @@
         // rendered card. Clicking anywhere on a card (image or button) opens
         // it INSTANTLY using data already loaded — no network call here.
         document.getElementById('blog-grid').addEventListener('click', (e) => {
-            const card = e.target.closest('article[data-slug]');
+            const card = e.target.closest('article[data-uid]');
             if (!card) return;
-            const slug = card.dataset.slug;
-            const post = allPosts.find(p => p.slug === slug);
+            const uid = Number(card.dataset.uid);
+            const post = allPosts.find(p => p._uid === uid);
             if (!post) {
-                console.error('[blog] Could not find this post in the loaded data:', slug);
+                console.error('[blog] Could not find this post in the loaded data:', uid);
                 return;
             }
             openArticlePost(post);
@@ -566,7 +570,7 @@
         function renderRelated(post) {
             const container = document.getElementById('modal-related');
             const related = allPosts
-                .filter(p => p.category === post.category && p.slug !== post.slug)
+                .filter(p => p.category === post.category && p._uid !== post._uid)
                 .slice(0, 3);
             if (related.length === 0) { container.innerHTML = ''; return; }
             container.innerHTML = `
@@ -574,7 +578,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     ${related.map(r => {
                         const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(r.title)}&background=random&color=fff&size=300`;
-                        return `<button type="button" class="related-item text-left rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all" data-slug="${r.slug}">
+                        return `<button type="button" class="related-item text-left rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-all" data-slug="${r.slug}" data-uid="${r._uid}">
                             <img src="${r.image || fallback}" onerror="this.onerror=null;this.src='${fallback}';" class="w-full h-24 object-cover" referrerpolicy="no-referrer">
                             <div class="p-3"><p class="text-sm font-semibold line-clamp-2 dark:text-white">${r.title}</p></div>
                         </button>`;
@@ -586,7 +590,8 @@
         document.getElementById('modal-related').addEventListener('click', (e) => {
             const btn = e.target.closest('.related-item');
             if (!btn) return;
-            const post = allPosts.find(p => p.slug === btn.dataset.slug);
+            const uid = Number(btn.dataset.uid);
+            const post = allPosts.find(p => p._uid === uid);
             if (post) openArticlePost(post);
         });
 
