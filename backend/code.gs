@@ -33,10 +33,6 @@ const CONFIG = {
   get TOKEN_SECRET() { return PROPS.getProperty('TOKEN_SECRET'); },
   get ADMIN_EMAIL() { return PROPS.getProperty('ADMIN_EMAIL'); },
   get EMAIL_NOTIFICATIONS_ENABLED() { return PROPS.getProperty('EMAIL_NOTIFICATIONS_ENABLED') === 'true'; },
-  // Paste the ENTIRE contents of the Firebase service-account JSON file here
-  // (Firebase console > Project settings > Service accounts > Generate new
-  // private key). Used to send real push notifications. See FIREBASE_SETUP.md.
-  get FCM_SERVICE_ACCOUNT_JSON() { return PROPS.getProperty('FCM_SERVICE_ACCOUNT_JSON'); },
   get ALLOWED_ORIGINS() {
     const raw = PROPS.getProperty('ALLOWED_ORIGINS') || '';
     return raw.split(',').map(s => s.trim()).filter(Boolean);
@@ -63,6 +59,10 @@ const BLOG_HEADERS = [
   'Image', 'Slug', 'Date', 'Author', 'Views', 'Featured', 'SEOKeywords',
   'MetaDescription', 'Deleted'
 ];
+
+// Registered devices for push notifications (Firebase Cloud Messaging).
+// Lives in its own tab inside the Blogs spreadsheet.
+const DEVICE_TOKENS_HEADERS = ['Token', 'Platform', 'RegisteredAt'];
 const BLOG_COL = {};
 BLOG_HEADERS.forEach((h, i) => BLOG_COL[h] = i);
 
@@ -83,6 +83,7 @@ function setupProject() {
   // 1b. Blogs spreadsheet
   const blogsSS = ensureSpreadsheet_('BLOGS_SHEET_ID', 'Blogs');
   ensureSheetTab_(blogsSS, 'Blogs', BLOG_HEADERS);
+  ensureSheetTab_(blogsSS, 'DeviceTokens', DEVICE_TOKENS_HEADERS);
   removeLeftoverDefaultTab_(blogsSS);
 
   // 1c. Drive folder for blog images
@@ -269,7 +270,7 @@ function migrateBlogsSheetToNewSchema() {
 // click Run, then change the string back to something you don't mind
 // leaving in the file (it will just overwrite the same hash again).
 function setMyPassword() {
-  const myNewPassword = 'Thrinath+Susmitha26';
+  const myNewPassword = 'TypeYourNewPasswordHere';
   if (myNewPassword.length < 8) {
     Logger.log('Password must be at least 8 characters. Nothing was changed.');
     return;
@@ -356,8 +357,7 @@ function doPost(e) {
       case 'uploadImage': result = withAuth_(data, () => uploadImage_(data)); break;
       case 'markNotificationRead': result = withAuth_(data, () => markNotificationRead_(data)); break;
       case 'markAllRead': result = withAuth_(data, markAllNotificationsRead_); break;
-      case 'registerDevice': result = withAuth_(data, () => registerDevice_(data)); break;
-      case 'unregisterDevice': result = withAuth_(data, () => unregisterDevice_(data)); break;
+      case 'registerDeviceToken': result = withAuth_(data, () => registerDeviceToken_(data)); break;
       default: result = { success: false, error: 'Unknown action: ' + action };
     }
     return jsonOut_(result);
@@ -494,20 +494,25 @@ function submitContact_(data) {
     data.page, 'Unread', false, ''
   ]);
 
-  // Email is OFF by default — see NOTIFICATIONS section below.
+  // Email is OFF by default — see NOTIFICATIONS section below. The
+  // /notifications and /dashboard endpoints are what the mobile app polls
+  // for real in-app alerts instead.
   if (CONFIG.EMAIL_NOTIFICATIONS_ENABLED) {
     notifyAdmin_(sheetName, data);
   }
 
-  // Real push notification (Firebase Cloud Messaging) — this is what
-  // actually alerts the phone even when the app is fully closed. Runs
-  // regardless of the email toggle above; silently does nothing if
-  // FIREBASE_SETUP.md hasn't been completed yet (see sendPushToAllDevices_).
-  sendPushToAllDevices_(
-    'New ' + sheetName + ' contact',
-    sanitize_(data.name) + ': ' + sanitize_(data.subject || 'General Inquiry'),
-    { type: 'contact', sheet: sheetName, contactId: contactId }
-  );
+  // Push notification — instant, works even if the app is fully closed.
+  // Wrapped so a push failure (e.g. FCM not configured yet) never breaks
+  // the actual form submission for the visitor.
+  try {
+    sendPushToAllDevices_(
+      'New ' + sheetName + ' contact: ' + sanitize_(data.name),
+      sanitize_(data.subject || data.message).slice(0, 100),
+      { sheet: sheetName, contactId: contactId }
+    );
+  } catch (err) {
+    Logger.log('Push notification failed (form submission still saved fine): ' + err);
+  }
 
   return { success: true, contactId: contactId };
 }
@@ -537,163 +542,6 @@ function notifyAdmin_(sheetName, data) {
   } catch (err) {
     // Email quota exceeded or similar — never let this break form submission
     Logger.log('Notification email failed: ' + err);
-  }
-}
-
-// ---------------------------------------------------------------------------
-// PUSH NOTIFICATIONS (Firebase Cloud Messaging, HTTP v1 API)
-//
-// This is what makes the mobile app get a real notification even when it's
-// fully closed. Setup required — see FIREBASE_SETUP.md — otherwise every
-// function below is a safe no-op (checked via CONFIG.FCM_SERVICE_ACCOUNT_JSON).
-// ---------------------------------------------------------------------------
-
-// Registered device tokens are stored as a single JSON array under one
-// Script Property. Fine at this scale (one admin, a handful of devices);
-// swap for a "Devices" sheet if you ever need more than that.
-function getDeviceTokens_() {
-  const raw = PROPS.getProperty('DEVICE_TOKENS');
-  if (!raw) return [];
-  try {
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch (err) {
-    return [];
-  }
-}
-
-function saveDeviceTokens_(tokens) {
-  PROPS.setProperty('DEVICE_TOKENS', JSON.stringify(tokens));
-}
-
-// Called by the app (action=registerDevice) right after login / whenever
-// FCM hands it a fresh token.
-function registerDevice_(data) {
-  if (!data.fcmToken) return { success: false, error: 'Missing fcmToken' };
-  const tokens = getDeviceTokens_();
-  if (tokens.indexOf(data.fcmToken) === -1) {
-    tokens.push(data.fcmToken);
-    saveDeviceTokens_(tokens);
-  }
-  return { success: true };
-}
-
-// Called by the app (action=unregisterDevice) on explicit logout, so a
-// signed-out device stops receiving pushes meant for the admin.
-function unregisterDevice_(data) {
-  if (data.fcmToken) {
-    saveDeviceTokens_(getDeviceTokens_().filter(function (t) { return t !== data.fcmToken; }));
-  }
-  return { success: true };
-}
-
-function removeDeviceTokens_(staleTokens) {
-  if (!staleTokens.length) return;
-  const remaining = getDeviceTokens_().filter(function (t) { return staleTokens.indexOf(t) === -1; });
-  saveDeviceTokens_(remaining);
-}
-
-// Base64url-encodes a UTF-8 string per RFC 7515 (no padding), needed for JWT.
-function base64UrlEncode_(str) {
-  return Utilities.base64EncodeWebSafe(Utilities.newBlob(str).getBytes()).replace(/=+$/, '');
-}
-
-// Exchanges the Firebase service-account key for a short-lived OAuth2
-// access token (self-signed JWT -> Google's token endpoint), which is what
-// FCM's HTTP v1 API requires instead of the old legacy server-key scheme.
-// Cached for ~50 minutes at a time to avoid re-signing on every call.
-function getFcmAccessToken_() {
-  const cache = CacheService.getScriptCache();
-  const cached = cache.get('fcm_access_token');
-  if (cached) return cached;
-
-  const svc = JSON.parse(CONFIG.FCM_SERVICE_ACCOUNT_JSON);
-  const nowSec = Math.floor(Date.now() / 1000);
-  const header = { alg: 'RS256', typ: 'JWT' };
-  const claimSet = {
-    iss: svc.client_email,
-    scope: 'https://www.googleapis.com/auth/firebase.messaging',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: nowSec,
-    exp: nowSec + 3600
-  };
-
-  const toSign = base64UrlEncode_(JSON.stringify(header)) + '.' + base64UrlEncode_(JSON.stringify(claimSet));
-  const signatureBytes = Utilities.computeRsaSha256Signature(toSign, svc.private_key);
-  const jwt = toSign + '.' + Utilities.base64EncodeWebSafe(signatureBytes).replace(/=+$/, '');
-
-  const resp = UrlFetchApp.fetch('https://oauth2.googleapis.com/token', {
-    method: 'post',
-    contentType: 'application/x-www-form-urlencoded',
-    payload: {
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: jwt
-    },
-    muteHttpExceptions: true
-  });
-
-  const json = JSON.parse(resp.getContentText());
-  if (!json.access_token) {
-    throw new Error('FCM auth failed: ' + resp.getContentText());
-  }
-  // Cache for a bit less than the token's real lifetime, to be safe.
-  cache.put('fcm_access_token', json.access_token, (json.expires_in || 3600) - 60);
-  return json.access_token;
-}
-
-// Sends `title`/`body` (+ optional `data` payload) to every registered
-// device via FCM's HTTP v1 API. Never throws — a push failure (or push not
-// being configured at all yet) must never break a form submission.
-function sendPushToAllDevices_(title, body, data) {
-  try {
-    if (!CONFIG.FCM_SERVICE_ACCOUNT_JSON) return; // not set up yet — no-op
-    const tokens = getDeviceTokens_();
-    if (!tokens.length) return;
-
-    const projectId = JSON.parse(CONFIG.FCM_SERVICE_ACCOUNT_JSON).project_id;
-    const accessToken = getFcmAccessToken_();
-    const url = 'https://fcm.googleapis.com/v1/projects/' + projectId + '/messages:send';
-
-    const stringData = {};
-    Object.keys(data || {}).forEach(function (k) { stringData[k] = String(data[k]); });
-
-    const staleTokens = [];
-    tokens.forEach(function (token) {
-      const message = {
-        message: {
-          token: token,
-          notification: { title: title, body: body },
-          android: {
-            priority: 'high',
-            notification: { channel_id: 'contact_submissions' }
-          },
-          data: stringData
-        }
-      };
-      const resp = UrlFetchApp.fetch(url, {
-        method: 'post',
-        contentType: 'application/json; charset=UTF-8',
-        headers: { Authorization: 'Bearer ' + accessToken },
-        payload: JSON.stringify(message),
-        muteHttpExceptions: true
-      });
-      const code = resp.getResponseCode();
-      if (code >= 400) {
-        const text = resp.getContentText();
-        // Token no longer valid (app uninstalled, token rotated, etc) —
-        // stop trying to push to it.
-        if (text.indexOf('UNREGISTERED') !== -1 || text.indexOf('NOT_FOUND') !== -1 ||
-            text.indexOf('INVALID_ARGUMENT') !== -1) {
-          staleTokens.push(token);
-        } else {
-          Logger.log('FCM send failed (' + code + '): ' + text);
-        }
-      }
-    });
-
-    removeDeviceTokens_(staleTokens);
-  } catch (err) {
-    Logger.log('sendPushToAllDevices_ failed: ' + err);
   }
 }
 
@@ -995,6 +843,156 @@ function uploadImage_(data) {
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   const url = 'https://lh3.googleusercontent.com/d/' + file.getId(); // direct-viewable image URL
   return { success: true, url: url, fileId: file.getId() };
+}
+
+// ---------------------------------------------------------------------------
+// 8b. PUSH NOTIFICATIONS (Firebase Cloud Messaging — HTTP v1 API)
+//
+// This uses FCM purely as a delivery mechanism, called directly via
+// UrlFetchApp — no Firebase SDK, no Firebase backend/database involved.
+// Requires two Script Properties (see MOBILE_SETUP_GUIDE.md for how to
+// get these from the Firebase console):
+//   FCM_SERVICE_ACCOUNT_JSON — the full service account key JSON, as one
+//                              string (Firebase Console > Project Settings
+//                              > Service Accounts > Generate new private key)
+// The project ID is read directly out of that JSON, so nothing else to set.
+// ---------------------------------------------------------------------------
+
+function getDeviceTokensSheet_() {
+  const ss = SpreadsheetApp.openById(CONFIG.BLOGS_SHEET_ID);
+  return ensureSheetTab_(ss, 'DeviceTokens', DEVICE_TOKENS_HEADERS);
+}
+
+// Called by the app right after login to register this device for push.
+// Upserts by token so the same device never gets duplicated.
+function registerDeviceToken_(data) {
+  if (!data.token) return { success: false, error: 'Missing token' };
+  const sheet = getDeviceTokensSheet_();
+  const values = sheet.getDataRange().getValues();
+  const exists = values.slice(1).some(row => row[0] === data.token);
+  if (!exists) {
+    sheet.appendRow([data.token, data.platform || '', new Date()]);
+  }
+  return { success: true };
+}
+
+function getDeviceTokens_() {
+  const sheet = getDeviceTokensSheet_();
+  const values = sheet.getDataRange().getValues();
+  return values.slice(1).map(row => row[0]).filter(Boolean);
+}
+
+// Removes a token that FCM reports as invalid/unregistered (e.g. the app
+// was uninstalled), so we stop wasting calls retrying it forever.
+function removeDeviceToken_(token) {
+  const sheet = getDeviceTokensSheet_();
+  const values = sheet.getDataRange().getValues();
+  for (let i = 1; i < values.length; i++) {
+    if (values[i][0] === token) {
+      sheet.deleteRow(i + 1);
+      break;
+    }
+  }
+}
+
+function base64UrlEncode_(input) {
+  const bytes = (typeof input === 'string') ? Utilities.newBlob(input).getBytes() : input;
+  return Utilities.base64EncodeWebSafe(bytes).replace(/=+$/, '');
+}
+
+// Exchanges the service account key for a short-lived OAuth2 access token,
+// signing a JWT by hand (the standard Google server-to-server auth flow).
+// Cached for under an hour so we don't re-sign a JWT on every single push.
+function getFcmAccessToken_() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get('fcm_access_token');
+  if (cached) return cached;
+
+  const saJson = PROPS.getProperty('FCM_SERVICE_ACCOUNT_JSON');
+  if (!saJson) throw new Error('FCM_SERVICE_ACCOUNT_JSON script property is not set. See MOBILE_SETUP_GUIDE.md.');
+  const sa = JSON.parse(saJson);
+
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: 'RS256', typ: 'JWT' };
+  const claimSet = {
+    iss: sa.client_email,
+    scope: 'https://www.googleapis.com/auth/firebase.messaging',
+    aud: 'https://oauth2.googleapis.com/token',
+    exp: now + 3600,
+    iat: now
+  };
+
+  const toSign = base64UrlEncode_(JSON.stringify(header)) + '.' + base64UrlEncode_(JSON.stringify(claimSet));
+  const signatureBytes = Utilities.computeRsaSha256Signature(toSign, sa.private_key);
+  const jwt = toSign + '.' + base64UrlEncode_(signatureBytes);
+
+  const res = UrlFetchApp.fetch('https://oauth2.googleapis.com/token', {
+    method: 'post',
+    contentType: 'application/x-www-form-urlencoded',
+    payload: {
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt
+    },
+    muteHttpExceptions: true
+  });
+
+  const body = JSON.parse(res.getContentText());
+  if (!body.access_token) {
+    throw new Error('Could not get FCM access token: ' + res.getContentText());
+  }
+
+  cache.put('fcm_access_token', body.access_token, 3300); // just under the real 1hr expiry
+  return body.access_token;
+}
+
+function sendPushToToken_(token, title, body, data) {
+  const saJson = PROPS.getProperty('FCM_SERVICE_ACCOUNT_JSON');
+  const projectId = JSON.parse(saJson).project_id;
+  const accessToken = getFcmAccessToken_();
+
+  const message = {
+    message: {
+      token: token,
+      notification: { title: title, body: body },
+      data: data || {},
+      android: {
+        priority: 'high',
+        notification: { channel_id: 'contact_submissions' }
+      },
+      apns: { headers: { 'apns-priority': '10' } }
+    }
+  };
+
+  const res = UrlFetchApp.fetch('https://fcm.googleapis.com/v1/projects/' + projectId + '/messages:send', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { Authorization: 'Bearer ' + accessToken },
+    payload: JSON.stringify(message),
+    muteHttpExceptions: true
+  });
+
+  const code = res.getResponseCode();
+  if (code >= 400) {
+    const text = res.getContentText();
+    Logger.log('FCM send failed for a device token: ' + text);
+    if (text.indexOf('UNREGISTERED') !== -1 || text.indexOf('NOT_FOUND') !== -1) {
+      removeDeviceToken_(token);
+    }
+  }
+  return code < 400;
+}
+
+// Sends to every registered device. Never lets one bad/expired token stop
+// the others from getting notified.
+function sendPushToAllDevices_(title, body, data) {
+  const tokens = getDeviceTokens_();
+  tokens.forEach(token => {
+    try {
+      sendPushToToken_(token, title, body, data);
+    } catch (err) {
+      Logger.log('Push send error: ' + err);
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
