@@ -15,7 +15,7 @@ class ApiService {
   // EDIT THIS — same Web App URL used by your website's HTML pages.
   // ---------------------------------------------------------------------
   static const String webAppUrl =
-      ''; // e.g. https://script.google.com/macros/s/AKfycb.../exec
+      'https://script.google.com/macros/s/AKfycbw04nGKRkcaVQHmY0Bm5Q8FjIDIojtyQuqc73rg7jBRcqTwJeDUN8zUEo_3VyLPPw-4/exec'; // e.g. https://script.google.com/macros/s/AKfycb.../exec
 
   // Dart's http client sends a very distinctive, non-browser User-Agent by
   // default (e.g. "Dart/3.4 (dart:io)"), which some networks/edge systems
@@ -256,6 +256,18 @@ class ApiService {
 
   Future<Map<String, dynamic>> markAllNotificationsRead() {
     return _post('markAllRead', {}, requiresAuth: true);
+  }
+
+  // -------------------------------------------------------------------------
+  // PUSH NOTIFICATIONS (Firebase Cloud Messaging device token sync)
+  // -------------------------------------------------------------------------
+  Future<Map<String, dynamic>> registerDevice(String fcmToken) {
+    return _post('registerDevice', {'fcmToken': fcmToken}, requiresAuth: true);
+  }
+
+  Future<Map<String, dynamic>> unregisterDevice(String fcmToken) {
+    return _post('unregisterDevice', {'fcmToken': fcmToken},
+        requiresAuth: true);
   }
 
   // -------------------------------------------------------------------------
